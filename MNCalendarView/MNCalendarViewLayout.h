@@ -10,4 +10,6 @@
 
 @interface MNCalendarViewLayout : UICollectionViewFlowLayout
 
+- (id) initWithHeaderEnabled:(BOOL)isHeaderEnabled;
+
 @end

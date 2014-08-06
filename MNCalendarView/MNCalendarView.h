@@ -28,6 +28,14 @@
 @property(nonatomic,copy)   NSDate     *selectedDate;
 
 @property(nonatomic,strong) UIColor *separatorColor UI_APPEARANCE_SELECTOR; // default is the standard separator gray
+@property(nonatomic,strong) UIColor *enabledTextColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *disabledTextColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *enabledBackgroundColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *disabledBackgroundColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *highlightedTextColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *selectedColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *headerBackgroundColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *headerTextColor UI_APPEARANCE_SELECTOR;
 
 @property(nonatomic,strong) Class headerViewClass;
 @property(nonatomic,strong) Class weekdayCellClass;
