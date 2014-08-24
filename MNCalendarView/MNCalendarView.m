@@ -217,7 +217,7 @@
                                                                  metrics:nil
                                                                    views:views]];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[calendarHeaderView(44)]|" //TODO: 44 should be a constant also used in the layout class
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[calendarHeaderView(44)]" //TODO: 44 should be a constant also used in the layout class
                                                                  options:0
                                                                  metrics:nil
                                                                    views:views]];
