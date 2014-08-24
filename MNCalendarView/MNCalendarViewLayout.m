@@ -12,7 +12,7 @@ CGFloat const MNMonthHeaderViewHeight = 44.0f;
 
 @implementation MNCalendarViewLayout
 
-- (id) initWithLayoutMode:(CalendarViewLayoutMode)layoutMode {
+- (id) initWithLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
     if (self = [super init]) {
         BOOL isScrollVertically = (layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH);
         
@@ -26,8 +26,8 @@ CGFloat const MNMonthHeaderViewHeight = 44.0f;
     return self;
 }
 
+// TODO: make this page weeks like we page months.
 - (CGPoint) targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
-    
     NSArray *array =
     [super layoutAttributesForElementsInRect:({
         CGRect bounds = self.collectionView.bounds;

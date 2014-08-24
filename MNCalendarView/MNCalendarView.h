@@ -19,7 +19,7 @@
 typedef enum {
     CALENDAR_VIEW_LAYOUT_MODE_MONTH = 0,
     CALENDAR_VIEW_LAYOUT_MODE_WEEK = 1
-} CalendarViewLayoutMode;
+} MNCalendarViewLayoutMode;
 
 @protocol MNCalendarViewDelegate;
 
@@ -28,7 +28,7 @@ typedef enum {
 @property(nonatomic,strong,readonly) MNCalendarHeaderView *calendarHeaderView;
 @property(nonatomic,strong,readonly) UICollectionView *datesCollectionView;
 @property(nonatomic,assign) id<MNCalendarViewDelegate> delegate;
-@property(nonatomic) CalendarViewLayoutMode layoutMode;
+@property(nonatomic) MNCalendarViewLayoutMode layoutMode;
 
 @property(nonatomic,strong) NSCalendar *calendar;
 @property(nonatomic,copy)   NSDate     *fromDate;

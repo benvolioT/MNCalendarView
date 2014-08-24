@@ -143,7 +143,7 @@
     _selectedDate = [selectedDate mn_beginningOfDay:self.calendar];
 }
 
-- (void) setLayoutMode:(CalendarViewLayoutMode)layoutMode {
+- (void) setLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
     _layoutMode = layoutMode;
     [self applyConstraints];
     
@@ -195,22 +195,51 @@
 }
 
 - (NSDate *) firstVisibleDateOfSection:(NSDate *)date {
-    date = [date mn_firstDateOfMonth:self.calendar];
-    
-    NSDateComponents *components = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSWeekdayCalendarUnit
-                                                    fromDate:date];
-    
-    return [[date mn_dateWithDay:-((components.weekday - 1) % self.daysInWeek) calendar:self.calendar] dateByAddingTimeInterval:MN_DAY];
+    switch (self.layoutMode) {
+        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        {
+            return [date mn_firstDateOfWeek:self.calendar];
+            break;
+        }
+        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        {
+            date = [date mn_firstDateOfMonth:self.calendar];
+            
+            NSDateComponents *components = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSWeekdayCalendarUnit
+                                                            fromDate:date];
+            
+            return [[date mn_dateWithDay:-((components.weekday - 1) % self.daysInWeek) calendar:self.calendar] dateByAddingTimeInterval:MN_DAY];
+
+            break;
+        }
+    }
 }
 
 - (NSDate *) lastVisibleDateOfSection:(NSDate *)date {
-    date = [date mn_lastDateOfMonth:self.calendar];
-    
-    NSDateComponents *components = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSWeekdayCalendarUnit
-                                                    fromDate:date];
-    
-    return [date mn_dateWithDay:components.day + (self.daysInWeek - 1) - ((components.weekday - 1) % self.daysInWeek)
-                       calendar:self.calendar];
+    switch (self.layoutMode) {
+        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        {
+            date = [date mn_firstDateOfWeek:self.calendar];
+            
+            NSDateComponents *components = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSWeekdayCalendarUnit
+                                                            fromDate:date];
+            
+            return [date mn_dateWithDay:components.day + (self.daysInWeek - 1)
+                               calendar:self.calendar];
+
+            break;
+        }
+        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        {
+            date = [date mn_lastDateOfMonth:self.calendar];
+            
+            NSDateComponents *components = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSWeekdayCalendarUnit
+                                                            fromDate:date];
+            
+            return [date mn_dateWithDay:components.day + (self.daysInWeek - 1) - ((components.weekday - 1) % self.daysInWeek)
+                               calendar:self.calendar];
+        }
+    }
 }
 
 - (void) applyConstraints {

@@ -14,6 +14,8 @@
 
 - (instancetype)mn_lastDateOfMonth:(NSCalendar *)calendar;
 
+- (instancetype)mn_firstDateOfWeek:(NSCalendar *)calendar;
+
 - (instancetype)mn_beginningOfDay:(NSCalendar *)calendar;
 
 - (instancetype)mn_dateWithDay:(NSUInteger)day calendar:(NSCalendar *)calendar;
