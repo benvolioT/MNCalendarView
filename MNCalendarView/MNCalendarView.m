@@ -18,6 +18,7 @@
 @property(nonatomic,strong,readwrite) MNCalendarHeaderView *calendarHeaderView;
 @property(nonatomic,strong,readwrite) UICollectionView *datesCollectionView;
 @property(nonatomic,strong,readwrite) UICollectionViewFlowLayout *datesCollectionViewLayout;
+@property(nonatomic,strong,readwrite) NSArray *datesCollectionViewLayoutConstraints;
 
 @property(nonatomic,strong,readwrite) NSArray *sectionDates;
 @property(nonatomic,assign,readwrite) NSUInteger daysInWeek;
@@ -144,6 +145,8 @@
 
 - (void) setLayoutMode:(CalendarViewLayoutMode)layoutMode {
     _layoutMode = layoutMode;
+    [self applyConstraints];
+    
     [self reloadData];
     [self.datesCollectionView setCollectionViewLayout:self.datesCollectionViewLayout
                                              animated:TRUE
@@ -224,12 +227,31 @@
                                                                  metrics:nil
                                                                    views:views]];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[calendarHeaderView(%f)]", MNMonthHeaderViewHeight]
-                                                                 options:0
-                                                                 metrics:nil
-                                                                   views:views]];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[datesCollectionView]|"
+    if (self.datesCollectionViewLayoutConstraints) {
+        [self removeConstraints:self.datesCollectionViewLayoutConstraints];
+    }
+    switch (self.layoutMode) {
+        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        {
+            self.datesCollectionViewLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[datesCollectionView]|"
+                                                                                                options:0
+                                                                                                metrics:nil
+                                                                                                  views:views];
+            break;
+        }
+        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        {
+            self.datesCollectionViewLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[calendarHeaderView][datesCollectionView]|"
+                                                                                                options:0
+                                                                                                metrics:nil
+                                                                                                  views:views];
+            break;
+        }
+    }
+    [self addConstraints:self.datesCollectionViewLayoutConstraints];
+
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[calendarHeaderView(%f)]", MNMonthHeaderViewHeight]
                                                                  options:0
                                                                  metrics:nil
                                                                    views:views]];
@@ -265,7 +287,8 @@
                                               indexPathForRow:0
                                               inSection:0]];
     CGFloat heightOfRow = sizeOfCell.height;
-    CGFloat height = (MN_MAX_ROWS_TO_DISPLAY_A_MONTH * heightOfRow) + MNMonthHeaderViewHeight;
+    CGFloat height = (self.layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH) ? (MN_MAX_ROWS_TO_DISPLAY_A_MONTH * heightOfRow) : heightOfRow;
+    height += MNMonthHeaderViewHeight;
     
     return CGSizeMake(width, height);
 }
@@ -413,7 +436,7 @@
         
     CGFloat width      = self.bounds.size.width;
     CGFloat itemWidth  = roundf(width / self.daysInWeek);
-    CGFloat itemHeight = (self.layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH) ? itemWidth : self.bounds.size.height;
+    CGFloat itemHeight = itemWidth;
     
     NSUInteger weekday = indexPath.item % self.daysInWeek;
     
