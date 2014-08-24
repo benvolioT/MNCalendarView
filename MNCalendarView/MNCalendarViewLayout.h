@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "MNCalendarView.h"
 
+extern CGFloat const MNMonthHeaderViewHeight;
+
 @interface MNCalendarViewLayout : UICollectionViewFlowLayout
 
 - (id)initWithLayoutMode:(CalendarViewLayoutMode)layoutMode;

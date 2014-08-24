@@ -23,29 +23,25 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 @interface MNCalendarViewCell()
 
 @property(nonatomic,strong,readwrite) UILabel *titleLabel;
+@property(nonatomic,strong,readwrite) UILabel *monthLabel;
 
 @end
 
 @implementation MNCalendarViewCell
 
-- (id)initWithFrame:(CGRect)frame {
+- (id) initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.contentView.backgroundColor = UIColor.clearColor;
         
-        self.enabledTextColor = UIColor.darkTextColor;
-        self.disabledTextColor = UIColor.lightGrayColor;
-        self.enabledBackgroundColor = UIColor.whiteColor;
-        self.disabledBackgroundColor = [UIColor colorWithRed:.96f green:.96f blue:.96f alpha:1.f];
-        
         self.titleLabel = [[UILabel alloc] initWithFrame:self.bounds];
-        self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.titleLabel.font = [UIFont systemFontOfSize:14.f];
-        self.titleLabel.highlightedTextColor = [UIColor whiteColor];
-        self.titleLabel.textAlignment = NSTextAlignmentCenter;
-        self.titleLabel.userInteractionEnabled = NO;
-        self.titleLabel.backgroundColor = [UIColor clearColor];
-        
+        [self setupLabel:self.titleLabel];
         [self.contentView addSubview:self.titleLabel];
+        
+        CGRect monthRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height / 3);
+        self.monthLabel = [[UILabel alloc] initWithFrame:monthRect];
+        [self setupLabel:self.monthLabel];
+        self.monthLabel.font = [UIFont systemFontOfSize:10.f];
+        [self.contentView addSubview:self.monthLabel];
         
         self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
         self.selectedBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -54,14 +50,23 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
     return self;
 }
 
-- (void)layoutSubviews {
+- (void) setupLabel:(UILabel *)label {
+    label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    label.font = [UIFont systemFontOfSize:14.f];
+    label.highlightedTextColor = [UIColor whiteColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.userInteractionEnabled = NO;
+    label.backgroundColor = [UIColor clearColor];
+}
+
+- (void) layoutSubviews {
     [super layoutSubviews];
     
     self.contentView.frame = self.bounds;
     self.selectedBackgroundView.frame = self.bounds;
 }
 
-- (void)drawRect:(CGRect)rect {
+- (void) drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGColorRef separatorColor = self.separatorColor.CGColor;
@@ -74,12 +79,17 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
                       pixel);
 }
 
-- (void)setHighlightedTextColor:(UIColor *)textColor {
+- (void) setHighlightedTextColor:(UIColor *)textColor {
     self.titleLabel.highlightedTextColor = textColor;
+    self.monthLabel.highlightedTextColor = textColor;
 }
 
-- (void)setSelectedColor:(UIColor *)selectedColor {
+- (void) setSelectedColor:(UIColor *)selectedColor {
     self.selectedBackgroundView.backgroundColor = selectedColor;
+}
+
+- (void) setMonthTextColor:(UIColor *)monthTextColor {
+    self.monthLabel.textColor = monthTextColor;
 }
 
 @end

@@ -18,4 +18,6 @@
 
 - (instancetype)mn_dateWithDay:(NSUInteger)day calendar:(NSCalendar *)calendar;
 
+- (BOOL) isFirstDateOfMonthInCalendar:(NSCalendar *)calendar;
+
 @end

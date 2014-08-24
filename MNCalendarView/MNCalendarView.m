@@ -23,6 +23,7 @@
 @property(nonatomic,assign,readwrite) NSUInteger daysInWeek;
 
 @property(nonatomic,strong,readwrite) NSDateFormatter *monthFormatter;
+@property(nonatomic,strong,readwrite) NSDateFormatter *shortMonthFormatter;
 
 - (NSDate *)firstVisibleDateOfSection:(NSDate *)date;
 - (NSDate *)lastVisibleDateOfSection:(NSDate *)date;
@@ -129,6 +130,12 @@
     self.monthFormatter = [[NSDateFormatter alloc] init];
     self.monthFormatter.calendar = calendar;
     [self.monthFormatter setDateFormat:@"MMMM yyyy"];
+    
+    self.shortMonthFormatter = [[NSDateFormatter alloc] init];
+    self.shortMonthFormatter.calendar = calendar;
+    [self.shortMonthFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [self.shortMonthFormatter setDateFormat:@"MMM"];
+
 }
 
 - (void) setSelectedDate:(NSDate *)selectedDate {
@@ -217,7 +224,7 @@
                                                                  metrics:nil
                                                                    views:views]];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[calendarHeaderView(44)]" //TODO: 44 should be a constant also used in the layout class
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[calendarHeaderView(%f)]", MNMonthHeaderViewHeight]
                                                                  options:0
                                                                  metrics:nil
                                                                    views:views]];
@@ -248,6 +255,21 @@
     
     return enabled;
 }
+
+- (CGSize) sizeThatFits:(CGSize)size {
+    CGFloat width = size.width;
+    
+    CGSize sizeOfCell = [self collectionView:self.datesCollectionView
+                                      layout:self.datesCollectionViewLayout
+                      sizeForItemAtIndexPath:[NSIndexPath
+                                              indexPathForRow:0
+                                              inSection:0]];
+    CGFloat heightOfRow = sizeOfCell.height;
+    CGFloat height = (MN_MAX_ROWS_TO_DISPLAY_A_MONTH * heightOfRow) + MNMonthHeaderViewHeight;
+    
+    return CGSizeMake(width, height);
+}
+
 
 #pragma mark - UICollectionViewDataSource
 
@@ -308,6 +330,14 @@
         [cell setEnabled:[self dateEnabled:date]];
     }
     
+    if (cell.enabled && [date isFirstDateOfMonthInCalendar:self.calendar]) {
+        NSString *monthLabel = [self.shortMonthFormatter stringFromDate:date];
+        cell.monthLabel.text = monthLabel;
+    }
+    else {
+        cell.monthLabel.text = nil;
+    }
+    
     if (self.selectedDate && cell.enabled) {
         [cell setSelected:[date isEqualToDate:self.selectedDate]];
     }
@@ -323,6 +353,7 @@
     cell.highlightedTextColor = self.highlightedTextColor;
     cell.enabledBackgroundColor = self.enabledBackgroundColor;
     cell.disabledBackgroundColor = self.disabledBackgroundColor;
+    cell.monthTextColor = self.captionTextColor;
 }
 
 - (NSDate *) setDateOnCell:(MNCalendarViewDayCell *)cell forIndexPath:(NSIndexPath *)indexPath {

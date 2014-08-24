@@ -55,4 +55,14 @@
   return [calendar dateFromComponents:components];
 }
 
+- (BOOL) isFirstDateOfMonthInCalendar:(NSCalendar *)calendar {
+    if (nil == calendar) {
+        calendar = [NSCalendar currentCalendar];
+    }
+    
+    NSDateComponents *components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:self];
+    
+    return (components.day == 1);
+}
+
 @end

@@ -105,7 +105,8 @@
     cell.backgroundColor = self.backgroundColor;
     cell.titleLabel.text = self.weekdaySymbols[indexPath.item];
     cell.titleLabel.textColor = self.textColor;
-    cell.separatorColor = self.separatorColor;
+    cell.separatorColor = self.separatorColor;        
+    
     return cell;
 }
 

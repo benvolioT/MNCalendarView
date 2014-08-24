@@ -8,6 +8,8 @@
 
 #import "MNCalendarViewLayout.h"
 
+CGFloat const MNMonthHeaderViewHeight = 44.0f;
+
 @implementation MNCalendarViewLayout
 
 - (id) initWithLayoutMode:(CalendarViewLayoutMode)layoutMode {
@@ -19,7 +21,7 @@
         self.minimumLineSpacing = 0.f;
         self.footerReferenceSize = CGSizeZero;
         self.scrollDirection = (isScrollVertically) ? UICollectionViewScrollDirectionVertical : UICollectionViewScrollDirectionHorizontal;
-        self.headerReferenceSize = (self.scrollDirection == UICollectionViewScrollDirectionVertical) ? CGSizeMake(0.f, 44.f) : CGSizeMake(0.f, 0.f);
+        self.headerReferenceSize = (self.scrollDirection == UICollectionViewScrollDirectionVertical) ? CGSizeMake(0.f, MNMonthHeaderViewHeight) : CGSizeMake(0.f, 0.f);
     }
     return self;
 }

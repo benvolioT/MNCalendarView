@@ -12,6 +12,11 @@ extern NSString *const MNCalendarViewDayCellIdentifier;
 
 @interface MNCalendarViewDayCell : MNCalendarViewCell
 
+@property(nonatomic,strong) UIColor *enabledTextColor;
+@property(nonatomic,strong) UIColor *disabledTextColor;
+@property(nonatomic,strong) UIColor *enabledBackgroundColor;
+@property(nonatomic,strong) UIColor *disabledBackgroundColor;
+
 @property(nonatomic,strong,readonly) NSDate *date;
 
 - (void)setDate:(NSDate *)date

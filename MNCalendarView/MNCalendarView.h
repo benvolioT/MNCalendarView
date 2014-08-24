@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "MNCalendarHeaderView.h"
 
-#define MN_MINUTE 60.f
-#define MN_HOUR   MN_MINUTE * 60.f
-#define MN_DAY    MN_HOUR * 24.f
-#define MN_WEEK   MN_DAY * 7.f
-#define MN_YEAR   MN_DAY * 365.f
+#define MN_MINUTE                           60.f
+#define MN_HOUR                             MN_MINUTE * 60.f
+#define MN_DAY                              MN_HOUR * 24.f
+#define MN_WEEK                             MN_DAY * 7.f
+#define MN_YEAR                             MN_DAY * 365.f
+#define MN_MAX_ROWS_TO_DISPLAY_A_MONTH      6
 
 typedef enum {
     CALENDAR_VIEW_LAYOUT_MODE_MONTH = 0,
@@ -37,6 +38,7 @@ typedef enum {
 @property(nonatomic,strong) UIColor *separatorColor UI_APPEARANCE_SELECTOR; // default is the standard separator gray
 @property(nonatomic,strong) UIColor *enabledTextColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic,strong) UIColor *disabledTextColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *captionTextColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic,strong) UIColor *enabledBackgroundColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic,strong) UIColor *disabledBackgroundColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic,strong) UIColor *highlightedTextColor UI_APPEARANCE_SELECTOR;
