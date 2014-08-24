@@ -8,11 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString *const MNCalendarHeaderViewIdentifier;
+@interface MNCalendarHeaderView : UIView <UICollectionViewDataSource, UICollectionViewDelegate>
 
-@interface MNCalendarHeaderView : UICollectionReusableView
+@property(nonatomic,strong,readonly) UICollectionView *daysOfWeekCollectionView;
 
-@property(nonatomic,strong,readonly) UILabel *titleLabel;
-@property(nonatomic,strong) NSDate *date;
+@property(nonatomic,strong) NSCalendar *calendar;
+@property(nonatomic,assign,readwrite) NSUInteger daysInWeek;
+
+@property(nonatomic,strong) Class weekdayCellClass;
+
+@property(nonatomic,strong) UIColor *textColor UI_APPEARANCE_SELECTOR;
+@property(nonatomic,strong) UIColor *separatorColor UI_APPEARANCE_SELECTOR;
 
 @end

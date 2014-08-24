@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MNCalendarHeaderView.h"
 
 #define MN_MINUTE 60.f
 #define MN_HOUR   MN_MINUTE * 60.f
@@ -14,13 +15,19 @@
 #define MN_WEEK   MN_DAY * 7.f
 #define MN_YEAR   MN_DAY * 365.f
 
+typedef enum {
+    CALENDAR_VIEW_LAYOUT_MODE_MONTH = 0,
+    CALENDAR_VIEW_LAYOUT_MODE_WEEK = 1
+} CalendarViewLayoutMode;
+
 @protocol MNCalendarViewDelegate;
 
 @interface MNCalendarView : UIView <UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property(nonatomic,strong,readonly) UICollectionView *collectionView;
-
+@property(nonatomic,strong,readonly) MNCalendarHeaderView *calendarHeaderView;
+@property(nonatomic,strong,readonly) UICollectionView *datesCollectionView;
 @property(nonatomic,assign) id<MNCalendarViewDelegate> delegate;
+@property(nonatomic) CalendarViewLayoutMode layoutMode;
 
 @property(nonatomic,strong) NSCalendar *calendar;
 @property(nonatomic,copy)   NSDate     *fromDate;
@@ -38,7 +45,6 @@
 @property(nonatomic,strong) UIColor *headerTextColor UI_APPEARANCE_SELECTOR;
 
 @property(nonatomic,strong) Class headerViewClass;
-@property(nonatomic,strong) Class weekdayCellClass;
 @property(nonatomic,strong) Class dayCellClass;
 
 - (void)reloadData;

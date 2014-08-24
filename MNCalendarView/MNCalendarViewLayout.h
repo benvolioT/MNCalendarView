@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MNCalendarView.h"
 
 @interface MNCalendarViewLayout : UICollectionViewFlowLayout
 
-- (id) initWithHeaderEnabled:(BOOL)isHeaderEnabled;
+- (id)initWithLayoutMode:(CalendarViewLayoutMode)layoutMode;
 
 @end

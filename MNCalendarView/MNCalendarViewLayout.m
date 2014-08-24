@@ -10,18 +10,21 @@
 
 @implementation MNCalendarViewLayout
 
-- (id)initWithHeaderEnabled:(BOOL)headerEnabled {
+- (id) initWithLayoutMode:(CalendarViewLayoutMode)layoutMode {
     if (self = [super init]) {
+        BOOL isScrollVertically = (layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH);
+        
         self.sectionInset = UIEdgeInsetsZero;
         self.minimumInteritemSpacing = 0.f;
         self.minimumLineSpacing = 0.f;
-        self.headerReferenceSize = (headerEnabled) ? CGSizeMake(0.f, 44.f) : CGSizeMake(0.0f, 0.0f);
         self.footerReferenceSize = CGSizeZero;
+        self.scrollDirection = (isScrollVertically) ? UICollectionViewScrollDirectionVertical : UICollectionViewScrollDirectionHorizontal;
+        self.headerReferenceSize = (self.scrollDirection == UICollectionViewScrollDirectionVertical) ? CGSizeMake(0.f, 44.f) : CGSizeMake(0.f, 0.f);
     }
     return self;
 }
 
-- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
+- (CGPoint) targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
     
     NSArray *array =
     [super layoutAttributesForElementsInRect:({

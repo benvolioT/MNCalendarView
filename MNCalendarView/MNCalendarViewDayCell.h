@@ -13,10 +13,12 @@ extern NSString *const MNCalendarViewDayCellIdentifier;
 @interface MNCalendarViewDayCell : MNCalendarViewCell
 
 @property(nonatomic,strong,readonly) NSDate *date;
-@property(nonatomic,strong,readonly) NSDate *month;
 
 - (void)setDate:(NSDate *)date
           month:(NSDate *)month
+       calendar:(NSCalendar *)calendar;
+
+- (void)setDate:(NSDate *)date
        calendar:(NSCalendar *)calendar;
 
 @end
