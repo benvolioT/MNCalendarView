@@ -17,7 +17,7 @@
 
 @property(nonatomic,strong,readwrite) MNCalendarHeaderView *calendarHeaderView;
 @property(nonatomic,strong,readwrite) UICollectionView *datesCollectionView;
-@property(nonatomic,strong,readwrite) UICollectionViewFlowLayout *datesCollectionViewLayout;
+@property(nonatomic,strong,readwrite) MNCalendarViewLayout *datesCollectionViewLayout;
 @property(nonatomic,strong,readwrite) NSArray *datesCollectionViewLayoutConstraints;
 
 @property(nonatomic,strong,readwrite) NSArray *sectionDates;
@@ -84,6 +84,7 @@
         _calendarHeaderView.textColor = self.headerTextColor;
         _calendarHeaderView.separatorColor = self.separatorColor;
         _calendarHeaderView.translatesAutoresizingMaskIntoConstraints = NO;
+        _calendarHeaderView.userInteractionEnabled = FALSE;
         _calendarHeaderView.layer.zPosition = 1024;
     }
     return _calendarHeaderView;
@@ -106,8 +107,11 @@
     return _datesCollectionView;
 }
 
-- (UICollectionViewFlowLayout *) datesCollectionViewLayout {
-    return [[MNCalendarViewLayout alloc] initWithLayoutMode:self.layoutMode];
+- (MNCalendarViewLayout *) datesCollectionViewLayout {
+    if (nil == _datesCollectionViewLayout) {
+        _datesCollectionViewLayout = [[MNCalendarViewLayout alloc] initWithLayoutMode:self.layoutMode];
+    }
+    return _datesCollectionViewLayout;
 }
 
 - (void) setSeparatorColor:(UIColor *)separatorColor {
@@ -148,6 +152,9 @@
     [self applyConstraints];
     
     [self reloadData];
+    
+    [self.datesCollectionViewLayout setLayoutMode:layoutMode];
+    
     [self.datesCollectionView setCollectionViewLayout:self.datesCollectionViewLayout
                                              animated:TRUE
                                            completion:^(BOOL finished) {

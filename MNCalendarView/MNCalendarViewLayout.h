@@ -13,6 +13,8 @@ extern CGFloat const MNMonthHeaderViewHeight;
 
 @interface MNCalendarViewLayout : UICollectionViewFlowLayout
 
-- (id)initWithLayoutMode:(MNCalendarViewLayoutMode)layoutMode;
+- (id) initWithLayoutMode:(MNCalendarViewLayoutMode)layoutMode;
+
+@property (nonatomic) MNCalendarViewLayoutMode layoutMode;
 
 @end

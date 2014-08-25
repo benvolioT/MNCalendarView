@@ -48,6 +48,7 @@
         _daysOfWeekCollectionView.dataSource = self;
         _daysOfWeekCollectionView.delegate = self;
         _daysOfWeekCollectionView.backgroundColor = [UIColor redColor];
+        _daysOfWeekCollectionView.bounces = FALSE;
         
         [self registerDaysOfWeekCollectionViewClasses];
     }

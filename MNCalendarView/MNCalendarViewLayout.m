@@ -14,16 +14,24 @@ CGFloat const MNMonthHeaderViewHeight = 44.0f;
 
 - (id) initWithLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
     if (self = [super init]) {
-        BOOL isScrollVertically = (layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH);
+        [self setLayoutMode:layoutMode];
         
         self.sectionInset = UIEdgeInsetsZero;
         self.minimumInteritemSpacing = 0.f;
         self.minimumLineSpacing = 0.f;
         self.footerReferenceSize = CGSizeZero;
-        self.scrollDirection = (isScrollVertically) ? UICollectionViewScrollDirectionVertical : UICollectionViewScrollDirectionHorizontal;
-        self.headerReferenceSize = (self.scrollDirection == UICollectionViewScrollDirectionVertical) ? CGSizeMake(0.f, MNMonthHeaderViewHeight) : CGSizeMake(0.f, 0.f);
+
     }
+    
     return self;
+}
+
+- (void) setLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
+    BOOL isScrollVertically = (layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH);
+    
+    self.scrollDirection = (isScrollVertically) ? UICollectionViewScrollDirectionVertical : UICollectionViewScrollDirectionHorizontal;
+    self.headerReferenceSize = (self.scrollDirection == UICollectionViewScrollDirectionVertical) ? CGSizeMake(0.f, MNMonthHeaderViewHeight) : CGSizeMake(0.f, 0.f);
+
 }
 
 // TODO: make this page weeks like we page months.
