@@ -8,7 +8,7 @@
 
 #import "MNCalendarViewLayout.h"
 
-CGFloat const MNMonthHeaderViewHeight = 44.0f;
+CGFloat const MNMonthHeaderViewHeight = 46.0f; // This is the height of a date cell on an iPhone 5. Might want to make this not a constant.
 
 @implementation MNCalendarViewLayout
 
