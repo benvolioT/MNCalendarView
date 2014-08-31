@@ -15,6 +15,7 @@
 #define MN_WEEK                             MN_DAY * 7.f
 #define MN_YEAR                             MN_DAY * 365.f
 #define MN_MAX_ROWS_TO_DISPLAY_A_MONTH      6
+#define MN_NUMBER_OF_DAYS_VISIBLE_MONTH     MN_MAX_ROWS_TO_DISPLAY_A_MONTH * 7
 
 typedef enum {
     CALENDAR_VIEW_LAYOUT_MODE_MONTH = 0,

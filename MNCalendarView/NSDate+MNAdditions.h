@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define D_DAY		86400
+
 @interface NSDate (MNAdditions)
 
 - (instancetype)mn_firstDateOfMonth:(NSCalendar *)calendar;
@@ -21,5 +23,9 @@
 - (instancetype)mn_dateWithDay:(NSUInteger)day calendar:(NSCalendar *)calendar;
 
 - (BOOL) isFirstDateOfMonthInCalendar:(NSCalendar *)calendar;
+
+- (instancetype) dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar;
+
+- (instancetype) dateAtBeginningOfDateInCalendar:(NSCalendar *)calendar;
 
 @end

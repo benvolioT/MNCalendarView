@@ -238,13 +238,9 @@
         }
         case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
         {
-            date = [date mn_lastDateOfMonth:self.calendar];
-            
-            NSDateComponents *components = [self.calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSWeekdayCalendarUnit
-                                                            fromDate:date];
-            
-            return [date mn_dateWithDay:components.day + (self.daysInWeek - 1) - ((components.weekday - 1) % self.daysInWeek)
-                               calendar:self.calendar];
+            NSDate *firstDate = [self firstVisibleDateOfSection:[date dateAtBeginningOfDateInCalendar:self.calendar]];
+            NSDate *lastDate = [firstDate dateByAddingDays:(MN_NUMBER_OF_DAYS_VISIBLE_MONTH - 1) calendar:self.calendar];            
+            return lastDate;
         }
     }
 }

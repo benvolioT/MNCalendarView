@@ -97,4 +97,16 @@
     return (components.day == 1);
 }
 
+- (instancetype) dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar {
+    NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
+    [offsetComponents setDay:dDays];
+    return [calendar dateByAddingComponents:offsetComponents toDate:self options:0];
+}
+
+- (instancetype) dateAtBeginningOfDateInCalendar:(NSCalendar *)calendar {
+    NSDateComponents *components = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit)
+                                               fromDate:self];
+    return [calendar dateFromComponents:components];
+}
+
 @end
