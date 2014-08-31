@@ -24,6 +24,7 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 
 @property(nonatomic,strong,readwrite) UILabel *titleLabel;
 @property(nonatomic,strong,readwrite) UILabel *monthLabel;
+@property(nonatomic,strong,readwrite) UILabel *dayOfWeekLabel;
 
 @end
 
@@ -37,11 +38,17 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
         [self setupLabel:self.titleLabel];
         [self.contentView addSubview:self.titleLabel];
         
-        CGRect monthRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height / 3);
+        CGRect monthRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height / 3.0f);
         self.monthLabel = [[UILabel alloc] initWithFrame:monthRect];
         [self setupLabel:self.monthLabel];
         self.monthLabel.font = [UIFont systemFontOfSize:10.f];
         [self.contentView addSubview:self.monthLabel];
+        
+        CGRect dayOfWeekRect = CGRectMake(0, self.bounds.size.height * (2.0f / 3.0f), self.bounds.size.width, self.bounds.size.height / 3.0f);
+        self.dayOfWeekLabel = [[UILabel alloc] initWithFrame:dayOfWeekRect];
+        [self setupLabel:self.dayOfWeekLabel];
+        self.dayOfWeekLabel.font = [UIFont systemFontOfSize:9.f];
+        [self.contentView addSubview:self.dayOfWeekLabel];
         
         self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
         self.selectedBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -52,7 +59,7 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 
 - (void) setupLabel:(UILabel *)label {
     label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    label.font = [UIFont systemFontOfSize:14.f];
+    label.font = [UIFont boldSystemFontOfSize:14.f];
     label.highlightedTextColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     label.userInteractionEnabled = NO;
@@ -67,6 +74,8 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 }
 
 - (void) drawRect:(CGRect)rect {
+    // TODO: this seems to leave off the separator on the week view cells for every 7th cell.
+    
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGColorRef separatorColor = self.separatorColor.CGColor;
@@ -82,6 +91,7 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 - (void) setHighlightedTextColor:(UIColor *)textColor {
     self.titleLabel.highlightedTextColor = textColor;
     self.monthLabel.highlightedTextColor = textColor;
+    self.dayOfWeekLabel.highlightedTextColor = textColor;
 }
 
 - (void) setSelectedColor:(UIColor *)selectedColor {
@@ -90,6 +100,10 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 
 - (void) setMonthTextColor:(UIColor *)monthTextColor {
     self.monthLabel.textColor = monthTextColor;
+}
+
+- (void) setDayOfWeekTextColor:(UIColor *)dayOfWeekTextColor {
+    self.dayOfWeekLabel.textColor = dayOfWeekTextColor;
 }
 
 @end

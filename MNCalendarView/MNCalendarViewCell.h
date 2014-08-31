@@ -20,8 +20,10 @@ CG_EXTERN void MNContextDrawLine(CGContextRef c, CGPoint start, CGPoint end, CGC
 @property(nonatomic,strong) UIColor *highlightedTextColor;
 @property(nonatomic,strong) UIColor *selectedColor;
 @property(nonatomic,strong) UIColor *monthTextColor;
+@property(nonatomic,strong) UIColor *dayOfWeekTextColor;
 
 @property(nonatomic,strong,readonly) UILabel *titleLabel;
 @property(nonatomic,strong,readonly) UILabel *monthLabel;
+@property(nonatomic,strong,readonly) UILabel *dayOfWeekLabel;
 
 @end

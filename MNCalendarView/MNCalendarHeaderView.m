@@ -139,13 +139,4 @@
     return CGSizeMake(itemWidth, itemHeight);
 }
 
-// TODO?
-//- (CGSize) sizeThatFits:(CGSize)size {
-//    CGSize sizeOfCell = [self collectionView:self.daysOfWeekCollectionView
-//                                      layout:self.daysOfWeekCollectionViewLayout
-//                      sizeForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-//    
-//    return CGSizeMake(self.bounds.size.width, sizeOfCell.height);
-//}
-
 @end

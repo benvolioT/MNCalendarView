@@ -27,7 +27,7 @@ CGFloat const MNMonthHeaderViewHeight = 46.0f; // This is the height of a date c
 }
 
 - (void) setLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
-    BOOL isScrollVertically = (layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH);
+    BOOL isScrollVertically = (layoutMode == MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH);
     
     self.scrollDirection = (isScrollVertically) ? UICollectionViewScrollDirectionVertical : UICollectionViewScrollDirectionHorizontal;
     self.headerReferenceSize = (self.scrollDirection == UICollectionViewScrollDirectionVertical) ? CGSizeMake(0.f, MNMonthHeaderViewHeight) : CGSizeMake(0.f, 0.f);

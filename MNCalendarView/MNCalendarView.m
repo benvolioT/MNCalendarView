@@ -19,12 +19,14 @@
 @property(nonatomic,strong,readwrite) UICollectionView *datesCollectionView;
 @property(nonatomic,strong,readwrite) MNCalendarViewLayout *datesCollectionViewLayout;
 @property(nonatomic,strong,readwrite) NSArray *datesCollectionViewLayoutConstraints;
+@property(nonatomic,strong,readwrite) NSArray *calendarHeaderViewLayoutConstraints;
 
 @property(nonatomic,strong,readwrite) NSArray *sectionDates;
 @property(nonatomic,assign,readwrite) NSUInteger daysInWeek;
 
 @property(nonatomic,strong,readwrite) NSDateFormatter *monthFormatter;
 @property(nonatomic,strong,readwrite) NSDateFormatter *shortMonthFormatter;
+@property(nonatomic,strong,readwrite) NSArray *weekdaySymbols;
 
 - (NSDate *)firstVisibleDateOfSection:(NSDate *)date;
 - (NSDate *)lastVisibleDateOfSection:(NSDate *)date;
@@ -44,7 +46,7 @@
     self.toDate     = [self.fromDate dateByAddingTimeInterval:MN_YEAR * 4];
     self.daysInWeek = 7;
 
-    _layoutMode = CALENDAR_VIEW_LAYOUT_MODE_MONTH;
+    _layoutMode = MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH;
     
     self.headerViewClass  = MNMonthHeaderView.class;
     self.dayCellClass     = MNCalendarViewDayCell.class;
@@ -140,6 +142,8 @@
     self.shortMonthFormatter.calendar = calendar;
     [self.shortMonthFormatter setDateStyle:NSDateFormatterMediumStyle];
     [self.shortMonthFormatter setDateFormat:@"MMM"];
+    
+    self.weekdaySymbols = self.monthFormatter.shortWeekdaySymbols;
 
 }
 
@@ -172,10 +176,11 @@
     
     NSCalendarUnit calendarUnit;
     switch (self.layoutMode) {
-        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
             calendarUnit = NSMonthCalendarUnit;
             break;
-        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
             calendarUnit = NSWeekCalendarUnit;
             break;
     }
@@ -203,12 +208,13 @@
 
 - (NSDate *) firstVisibleDateOfSection:(NSDate *)date {
     switch (self.layoutMode) {
-        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
         {
             return [date mn_firstDateOfWeek:self.calendar];
             break;
         }
-        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
         {
             date = [date mn_firstDateOfMonth:self.calendar];
             
@@ -224,7 +230,8 @@
 
 - (NSDate *) lastVisibleDateOfSection:(NSDate *)date {
     switch (self.layoutMode) {
-        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
         {
             date = [date mn_firstDateOfWeek:self.calendar];
             
@@ -236,7 +243,7 @@
 
             break;
         }
-        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
         {
             NSDate *firstDate = [self firstVisibleDateOfSection:[date dateAtBeginningOfDateInCalendar:self.calendar]];
             NSDate *lastDate = [firstDate dateByAddingDays:(MN_NUMBER_OF_DAYS_VISIBLE_MONTH - 1) calendar:self.calendar];            
@@ -264,7 +271,7 @@
         [self removeConstraints:self.datesCollectionViewLayoutConstraints];
     }
     switch (self.layoutMode) {
-        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
         {
             self.datesCollectionViewLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[datesCollectionView]|"
                                                                                                 options:0
@@ -272,7 +279,8 @@
                                                                                                   views:views];
             break;
         }
-        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
         {
             self.datesCollectionViewLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[calendarHeaderView][datesCollectionView]|"
                                                                                                 options:0
@@ -283,10 +291,17 @@
     }
     [self addConstraints:self.datesCollectionViewLayoutConstraints];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[calendarHeaderView(%f)]", MNMonthHeaderViewHeight]
-                                                                 options:0
-                                                                 metrics:nil
-                                                                   views:views]];
+    if (self.calendarHeaderViewLayoutConstraints) {
+        [self removeConstraints:self.calendarHeaderViewLayoutConstraints];
+    }
+    CGFloat calendarHeaderHeight = (self.layoutMode == MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL) ? 0 : MNMonthHeaderViewHeight;
+    self.calendarHeaderViewLayoutConstraints = [NSLayoutConstraint constraintsWithVisualFormat:
+                                                [NSString stringWithFormat:@"V:|[calendarHeaderView(%f)]", calendarHeaderHeight]
+                                                                                       options:0
+                                                                                       metrics:nil
+                                                                                         views:views];
+    
+    [self addConstraints:self.calendarHeaderViewLayoutConstraints];
 }
 
 - (BOOL) dateEnabled:(NSDate *)date {
@@ -319,8 +334,11 @@
                                               indexPathForRow:0
                                               inSection:0]];
     CGFloat heightOfRow = sizeOfCell.height;
-    CGFloat height = (self.layoutMode == CALENDAR_VIEW_LAYOUT_MODE_MONTH) ? (MN_MAX_ROWS_TO_DISPLAY_A_MONTH * heightOfRow) : heightOfRow;
-    height += MNMonthHeaderViewHeight;
+    CGFloat height = (self.layoutMode == MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH) ? (MN_MAX_ROWS_TO_DISPLAY_A_MONTH * heightOfRow) : heightOfRow;
+    
+    if (self.layoutMode != MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL) {
+        height += MNMonthHeaderViewHeight;
+    }
     
     return CGSizeMake(width, height);
 }
@@ -334,7 +352,7 @@
 
 - (NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     switch (self.layoutMode) {
-        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
         {
             NSDate *sectionDate = self.sectionDates[section];
             NSDate *firstVisibleDateOfSection = [self firstVisibleDateOfSection:sectionDate];
@@ -351,7 +369,8 @@
 
             break;
         }
-        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
             return self.daysInWeek;
             break;
     }
@@ -393,6 +412,14 @@
         cell.monthLabel.text = nil;
     }
     
+    if (self.layoutMode == MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL) {
+        NSString *dayOfWeekLabel = self.weekdaySymbols[indexPath.item];
+        cell.dayOfWeekLabel.text = dayOfWeekLabel;
+    }
+    else {
+        cell.dayOfWeekLabel.text = nil;
+    }
+    
     if (self.selectedDate && cell.enabled) {
         [cell setSelected:[date isEqualToDate:self.selectedDate]];
     }
@@ -409,6 +436,7 @@
     cell.enabledBackgroundColor = self.enabledBackgroundColor;
     cell.disabledBackgroundColor = self.disabledBackgroundColor;
     cell.monthTextColor = self.captionTextColor;
+    cell.dayOfWeekTextColor = self.captionTextColor;
 }
 
 - (NSDate *) setDateOnCell:(MNCalendarViewDayCell *)cell forIndexPath:(NSIndexPath *)indexPath {
@@ -422,12 +450,13 @@
     NSDate *date = [self.calendar dateFromComponents:components];
     
     switch (self.layoutMode) {
-        case CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
             [cell setDate:date
                     month:sectionDate
                  calendar:self.calendar];
             break;
-        case CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
             [cell setDate:date
                  calendar:self.calendar];
             break;
