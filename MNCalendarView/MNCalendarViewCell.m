@@ -73,9 +73,7 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
     self.selectedBackgroundView.frame = self.bounds;
 }
 
-- (void) drawRect:(CGRect)rect {
-    // TODO: this seems to leave off the separator on the week view cells for every 7th cell.
-    
+- (void) drawRect:(CGRect)rect {    
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGColorRef separatorColor = self.separatorColor.CGColor;
