@@ -68,6 +68,19 @@ NSString *const MNCalendarViewDayCellIdentifier = @"MNCalendarViewDayCellIdentif
     self.enabled ? self.enabledBackgroundColor : self.disabledBackgroundColor;
 }
 
+- (void) setToday:(BOOL)isToday {
+    _today = isToday;
+
+    if (isToday) {
+        [self.titleLabel setFont:[UIFont boldSystemFontOfSize:14.f]];
+        [self.titleLabel setTextColor:self.todayTextColor];
+    }
+    else {
+        [self.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
+        [self.titleLabel setTextColor:self.dayOfWeekTextColor];
+    }
+}
+
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
     

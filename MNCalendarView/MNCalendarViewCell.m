@@ -41,7 +41,7 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
         CGRect monthRect = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height / 3.0f);
         self.monthLabel = [[UILabel alloc] initWithFrame:monthRect];
         [self setupLabel:self.monthLabel];
-        self.monthLabel.font = [UIFont systemFontOfSize:10.f];
+        self.monthLabel.font = [UIFont boldSystemFontOfSize:10.f];
         [self.contentView addSubview:self.monthLabel];
         
         CGRect dayOfWeekRect = CGRectMake(0, self.bounds.size.height * (2.0f / 3.0f), self.bounds.size.width, self.bounds.size.height / 3.0f);
@@ -59,7 +59,7 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 
 - (void) setupLabel:(UILabel *)label {
     label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    label.font = [UIFont boldSystemFontOfSize:14.f];
+    label.font = [UIFont systemFontOfSize:14.f];
     label.highlightedTextColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     label.userInteractionEnabled = NO;
@@ -73,7 +73,7 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
     self.selectedBackgroundView.frame = self.bounds;
 }
 
-- (void) drawRect:(CGRect)rect {    
+- (void) drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGColorRef separatorColor = self.separatorColor.CGColor;

@@ -149,6 +149,7 @@
 
 - (void) setSelectedDate:(NSDate *)selectedDate {
     _selectedDate = [selectedDate mn_beginningOfDay:self.calendar];
+    [self.datesCollectionView reloadData];
 }
 
 - (void) setLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
@@ -419,6 +420,8 @@
     else {
         cell.dayOfWeekLabel.text = nil;
     }
+    
+    [cell setToday:[date isTodayInCalendar:self.calendar]];
     
     if (self.selectedDate && cell.enabled) {
         [cell setSelected:[date isEqualToDate:self.selectedDate]];

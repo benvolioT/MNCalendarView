@@ -97,6 +97,19 @@
     return (components.day == 1);
 }
 
+- (BOOL) isEqualToDateIgnoringTime:(NSDate *)aDate calendar:(NSCalendar *)calendar {
+	NSDateComponents *components1 = [calendar components:DATE_COMPONENTS fromDate:self];
+	NSDateComponents *components2 = [calendar components:DATE_COMPONENTS fromDate:aDate];
+	return (([components1 year] == [components2 year]) &&
+			([components1 month] == [components2 month]) &&
+			([components1 day] == [components2 day]));
+}
+
+- (BOOL) isTodayInCalendar:(NSCalendar *)calendar {
+	return [self isEqualToDateIgnoringTime:[NSDate date] calendar:calendar];
+}
+
+
 - (instancetype) dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar {
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
     [offsetComponents setDay:dDays];

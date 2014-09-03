@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #define D_DAY		86400
+#define DATE_COMPONENTS (NSYearCalendarUnit| NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekCalendarUnit |  NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekdayOrdinalCalendarUnit)
 
 @interface NSDate (MNAdditions)
 
@@ -23,6 +24,8 @@
 - (instancetype)mn_dateWithDay:(NSUInteger)day calendar:(NSCalendar *)calendar;
 
 - (BOOL) isFirstDateOfMonthInCalendar:(NSCalendar *)calendar;
+
+- (BOOL) isTodayInCalendar:(NSCalendar *)calendar;
 
 - (instancetype) dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar;
 

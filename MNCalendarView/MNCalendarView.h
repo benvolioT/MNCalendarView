@@ -38,6 +38,7 @@ typedef enum {
 @property(nonatomic,copy)   NSDate     *selectedDate;
 
 @property(nonatomic,strong) UIColor *separatorColor UI_APPEARANCE_SELECTOR; // default is the standard separator gray
+@property(nonatomic,strong) UIColor *todayTextColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic,strong) UIColor *enabledTextColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic,strong) UIColor *disabledTextColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic,strong) UIColor *captionTextColor UI_APPEARANCE_SELECTOR;
