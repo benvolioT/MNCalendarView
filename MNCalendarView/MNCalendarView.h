@@ -53,7 +53,9 @@ typedef enum {
 @property(nonatomic,strong) Class dayCellClass;
 
 - (void)reloadData;
-- (void)registerUICollectionViewClasses; 
+- (void)registerUICollectionViewClasses;
+- (void) setFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate ;
+- (void) setSelectedDate:(NSDate *)selectedDate animated:(BOOL)animated;
 
 @end
 

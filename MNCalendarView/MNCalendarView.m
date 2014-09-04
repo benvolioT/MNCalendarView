@@ -42,8 +42,8 @@
 
 - (void) commonInit {
     self.calendar   = NSCalendar.currentCalendar;
-    self.fromDate   = [NSDate.date mn_beginningOfDay:self.calendar];
-    self.toDate     = [self.fromDate dateByAddingTimeInterval:MN_YEAR * 4];
+    _fromDate       = [NSDate.date mn_beginningOfDay:self.calendar];
+    _toDate         = [self.fromDate dateByAddingTimeInterval:MN_YEAR * 4];
     self.daysInWeek = 7;
 
     _layoutMode = MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH;
@@ -148,8 +148,56 @@
 }
 
 - (void) setSelectedDate:(NSDate *)selectedDate {
-    _selectedDate = [selectedDate mn_beginningOfDay:self.calendar];
-    [self.datesCollectionView reloadData];
+    [self setSelectedDate:selectedDate animated:TRUE];
+}
+
+- (void) setSelectedDate:(NSDate *)selectedDate animated:(BOOL)animated {
+    NSDate *newDate = [selectedDate mn_beginningOfDay:self.calendar];
+    if (![_selectedDate isEqualToDate:newDate]) {
+        _selectedDate = newDate;
+        [self.datesCollectionView reloadData];
+        [self scrollToSelectedDateAnimated:animated];
+    }
+}
+
+- (void) scrollToSelectedDateAnimated:(BOOL)animated {
+    NSIndexPath *indexPath = [self indexPathOfSelectedDate];
+    if (indexPath) {        
+        switch (self.layoutMode) {
+            case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+            {
+                [self.datesCollectionView layoutIfNeeded];
+                
+                UICollectionViewLayoutAttributes *layoutAttributes =
+                [self.datesCollectionView layoutAttributesForSupplementaryElementOfKind:UICollectionElementKindSectionHeader
+                                                                            atIndexPath:indexPath];
+                CGFloat offsetY = layoutAttributes.frame.origin.y;
+                
+                CGFloat contentInsetY = self.datesCollectionView.contentInset.top;
+                CGFloat sectionInsetY = ((UICollectionViewFlowLayout *) self.datesCollectionView.collectionViewLayout).sectionInset.top;
+                
+                [self.datesCollectionView setContentOffset:CGPointMake(self.datesCollectionView.contentOffset.x, offsetY - contentInsetY - sectionInsetY) animated:animated];
+                
+                break;
+            }
+            case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+            case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
+            {
+                [self.datesCollectionView scrollToItemAtIndexPath:indexPath
+                                                 atScrollPosition:UICollectionViewScrollPositionLeft
+                                                         animated:animated];
+                break;
+            }
+        }
+    }
+}
+
+- (NSIndexPath *) indexPathOfSelectedDate {
+    NSIndexPath *indexPath = [self indexPathOfDate:_selectedDate];
+    
+    NSLog(@"IndexPath of date (%@): (%d)-(%d)", _selectedDate, indexPath.section, indexPath.item);
+    
+    return indexPath;
 }
 
 - (void) setLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
@@ -163,8 +211,26 @@
     [self.datesCollectionView setCollectionViewLayout:self.datesCollectionViewLayout
                                              animated:TRUE
                                            completion:^(BOOL finished) {
-                                               // Nothing for now.
+                                               // This isn't called for some reason?
                                            }];
+    
+    [self scrollToSelectedDateAnimated:FALSE];
+}
+
+- (void) setFromDate:(NSDate *)fromDate {
+    _fromDate = fromDate;
+    [self reloadData];
+}
+
+- (void) setToDate:(NSDate *)toDate {
+    _toDate = toDate;
+    [self reloadData];
+}
+
+- (void) setFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate {
+    _fromDate = fromDate;
+    _toDate = toDate;
+    [self reloadData];
 }
 
 - (void) reloadData {
@@ -246,8 +312,8 @@
         }
         case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
         {
-            NSDate *firstDate = [self firstVisibleDateOfSection:[date dateAtBeginningOfDateInCalendar:self.calendar]];
-            NSDate *lastDate = [firstDate dateByAddingDays:(MN_NUMBER_OF_DAYS_VISIBLE_MONTH - 1) calendar:self.calendar];            
+            NSDate *firstDate = [self firstVisibleDateOfSection:[date mn_dateAtBeginningOfDateInCalendar:self.calendar]];
+            NSDate *lastDate = [firstDate mn_dateByAddingDays:(MN_NUMBER_OF_DAYS_VISIBLE_MONTH - 1) calendar:self.calendar];
             return lastDate;
         }
     }
@@ -405,7 +471,7 @@
         [cell setEnabled:[self dateEnabled:date]];
     }
     
-    if (cell.enabled && [date isFirstDateOfMonthInCalendar:self.calendar]) {
+    if (cell.enabled && [date mn_isFirstDateOfMonthInCalendar:self.calendar]) {
         NSString *monthLabel = [self.shortMonthFormatter stringFromDate:date];
         cell.monthLabel.text = monthLabel;
     }
@@ -421,7 +487,7 @@
         cell.dayOfWeekLabel.text = nil;
     }
     
-    [cell setToday:[date isTodayInCalendar:self.calendar]];
+    [cell setToday:[date mn_isTodayInCalendar:self.calendar]];
     
     if (self.selectedDate && cell.enabled) {
         [cell setSelected:[date isEqualToDate:self.selectedDate]];
@@ -467,6 +533,37 @@
     
     return date;
 }
+
+- (NSIndexPath *) indexPathOfDate:(NSDate *)date {
+    if (!date) {
+        return nil;
+    }
+    
+    date = [date mn_dateAtBeginningOfDateInCalendar:self.calendar];
+    
+    if ([date mn_isEarlierThanDate:self.fromDate] ||
+        [date mn_isLaterThanDate:self.toDate]) {
+        return nil;
+    }
+    
+    long section = 1;
+    while (section < self.sectionDates.count) {
+        NSDate *firstDateInSection = self.sectionDates[section];
+        
+        if ([date isEqualToDate:firstDateInSection]) {
+            return [NSIndexPath indexPathForItem:0 inSection:section];
+        }
+        
+        if ([date mn_isEarlierThanDate:firstDateInSection]) {
+            return [NSIndexPath indexPathForItem:0 inSection:(section - 1)];
+        }
+        
+        section++;
+    }
+    
+    return nil;
+}
+
 
 #pragma mark - UICollectionViewDelegate
 

@@ -87,7 +87,7 @@
   return [calendar dateFromComponents:components];
 }
 
-- (BOOL) isFirstDateOfMonthInCalendar:(NSCalendar *)calendar {
+- (BOOL) mn_isFirstDateOfMonthInCalendar:(NSCalendar *)calendar {
     if (nil == calendar) {
         calendar = [NSCalendar currentCalendar];
     }
@@ -97,7 +97,7 @@
     return (components.day == 1);
 }
 
-- (BOOL) isEqualToDateIgnoringTime:(NSDate *)aDate calendar:(NSCalendar *)calendar {
+- (BOOL) mn_isEqualToDateIgnoringTime:(NSDate *)aDate calendar:(NSCalendar *)calendar {
 	NSDateComponents *components1 = [calendar components:DATE_COMPONENTS fromDate:self];
 	NSDateComponents *components2 = [calendar components:DATE_COMPONENTS fromDate:aDate];
 	return (([components1 year] == [components2 year]) &&
@@ -105,18 +105,25 @@
 			([components1 day] == [components2 day]));
 }
 
-- (BOOL) isTodayInCalendar:(NSCalendar *)calendar {
-	return [self isEqualToDateIgnoringTime:[NSDate date] calendar:calendar];
+- (BOOL) mn_isTodayInCalendar:(NSCalendar *)calendar {
+	return [self mn_isEqualToDateIgnoringTime:[NSDate date] calendar:calendar];
 }
 
+- (BOOL) mn_isEarlierThanDate: (NSDate *) aDate {
+	return ([self earlierDate:aDate] == self);
+}
 
-- (instancetype) dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar {
+- (BOOL) mn_isLaterThanDate: (NSDate *) aDate {
+	return ([self laterDate:aDate] == self);
+}
+
+- (instancetype) mn_dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar {
     NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
     [offsetComponents setDay:dDays];
     return [calendar dateByAddingComponents:offsetComponents toDate:self options:0];
 }
 
-- (instancetype) dateAtBeginningOfDateInCalendar:(NSCalendar *)calendar {
+- (instancetype) mn_dateAtBeginningOfDateInCalendar:(NSCalendar *)calendar {
     NSDateComponents *components = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit)
                                                fromDate:self];
     return [calendar dateFromComponents:components];

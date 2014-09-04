@@ -23,12 +23,16 @@
 
 - (instancetype)mn_dateWithDay:(NSUInteger)day calendar:(NSCalendar *)calendar;
 
-- (BOOL) isFirstDateOfMonthInCalendar:(NSCalendar *)calendar;
+- (BOOL) mn_isFirstDateOfMonthInCalendar:(NSCalendar *)calendar;
 
-- (BOOL) isTodayInCalendar:(NSCalendar *)calendar;
+- (BOOL) mn_isTodayInCalendar:(NSCalendar *)calendar;
 
-- (instancetype) dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar;
+- (BOOL) mn_isEarlierThanDate: (NSDate *) aDate;
 
-- (instancetype) dateAtBeginningOfDateInCalendar:(NSCalendar *)calendar;
+- (BOOL) mn_isLaterThanDate: (NSDate *) aDate;
+
+- (instancetype) mn_dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar;
+
+- (instancetype) mn_dateAtBeginningOfDateInCalendar:(NSCalendar *)calendar;
 
 @end

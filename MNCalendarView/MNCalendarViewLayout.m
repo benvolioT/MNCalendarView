@@ -84,12 +84,8 @@ CGFloat const MNMonthHeaderViewHeight = 46.0f; // This is the height of a date c
     
     CGRect targetRect = CGRectMake(proposedContentOffset.x, 0, self.collectionView.bounds.size.width, self.collectionView.bounds.size.height);
     
-    // TODO: do we need to get a larger rect area like we do in the other version of this method?
-    NSArray *array = [self layoutAttributesForElementsInRect:targetRect];
-    
+    NSArray *array = [self layoutAttributesForElementsInRect:targetRect];    
     for (MNCalendarViewLayoutAttributes *layoutAttributes in array) {
-        NSLog(@"Target offset for cell at index path: %d(%d): isFirstDayOfWeek: %d", layoutAttributes.indexPath.section, layoutAttributes.indexPath.item, layoutAttributes.isFirstDayOfWeek);
-        
         if (layoutAttributes.isFirstDayOfWeek) {
             CGFloat itemOffset = layoutAttributes.frame.origin.x;
             if (ABS(itemOffset - horizontalOffset) < ABS(offsetAdjustment)) {
