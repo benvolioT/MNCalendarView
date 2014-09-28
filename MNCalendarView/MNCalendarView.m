@@ -588,18 +588,12 @@
     }
     
     date = [date mn_dateAtBeginningOfDateInCalendar:self.calendar];
-
-    //TODO: remove?
-//    if ([date mn_isEarlierThanDate:self.fromDate] ||
-//        [date mn_isLaterThanDate:self.toDate]) {
-//        return nil;
-//    }
     
     long section = 1;
     while (section < self.sectionDates.count) {
         NSDate *firstDateInSection = self.sectionDates[section];
   
-        NSLog(@"Comparing date (%@) to firstDateInSection (%@) for section %ld.", date, firstDateInSection, section);
+        // NSLog(@"Comparing date (%@) to firstDateInSection (%@) for section %ld.", date, firstDateInSection, section);
         
         if ([date isEqualToDate:firstDateInSection]) {
             break;
@@ -613,14 +607,14 @@
         section++;
     }
     
-    NSLog(@"Section is (%ld)", section);
+    //NSLog(@"Section is (%ld)", section);
     
     long item = 0;
     long numberOfItemsInSection = [self collectionView:self.datesCollectionView numberOfItemsInSection:section];
     NSDate *currentDate = self.sectionDates[section];
     while (item < numberOfItemsInSection) {
         
-        NSLog(@"Comparing date (%@) to currentDate (%@) for item %ld.", date, currentDate, item);
+        //NSLog(@"Comparing date (%@) to currentDate (%@) for item %ld.", date, currentDate, item);
         
         if ([date isEqualToDate:currentDate]) {
             return [NSIndexPath indexPathForItem:item inSection:section];
