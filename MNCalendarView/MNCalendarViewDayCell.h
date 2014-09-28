@@ -16,7 +16,6 @@ extern NSString *const MNCalendarViewDayCellIdentifier;
 @property(nonatomic,strong) UIColor *disabledTextColor;
 @property(nonatomic,strong) UIColor *enabledBackgroundColor;
 @property(nonatomic,strong) UIColor *disabledBackgroundColor;
-@property(nonatomic,strong) UIColor *todayTextColor;
 
 @property(nonatomic,assign,getter = isToday) BOOL today;
 

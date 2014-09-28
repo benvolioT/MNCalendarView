@@ -19,6 +19,7 @@ CG_EXTERN void MNContextDrawLine(CGContextRef c, CGPoint start, CGPoint end, CGC
 @property(nonatomic,strong) UIColor *separatorColor;
 @property(nonatomic,strong) UIColor *highlightedTextColor;
 @property(nonatomic,strong) UIColor *selectedColor;
+@property(nonatomic,strong) UIColor *selectedTextColor;
 @property(nonatomic,strong) UIColor *monthTextColor;
 @property(nonatomic,strong) UIColor *dayOfWeekTextColor;
 

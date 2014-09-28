@@ -152,6 +152,11 @@
     [self.datesCollectionView reloadItemsAtIndexPaths:[self.datesCollectionView indexPathsForVisibleItems]];
 }
 
+- (void) setCaptionTextColor:(UIColor *)captionTextColor {
+    _captionTextColor = captionTextColor;
+    [self.datesCollectionView reloadItemsAtIndexPaths:[self.datesCollectionView indexPathsForVisibleItems]];
+}
+
 - (void) setCalendar:(NSCalendar *)calendar {
     _calendar = calendar;
     
@@ -521,7 +526,8 @@
     [cell setToday:[date mn_isTodayInCalendar:self.calendar]];
     
     if (self.selectedDate && cell.enabled) {
-        [cell setSelected:[date isEqualToDate:self.selectedDate]];
+        BOOL isSelected = [date isEqualToDate:self.selectedDate];
+        [cell setSelected:isSelected];
     }
     
     return cell;

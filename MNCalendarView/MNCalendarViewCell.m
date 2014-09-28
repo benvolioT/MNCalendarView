@@ -86,7 +86,24 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
                       pixel);
 }
 
+- (void) setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    
+    if (selected) {
+        self.titleLabel.textColor = self.selectedTextColor;
+        self.monthLabel.textColor = self.selectedTextColor;
+        self.dayOfWeekLabel.textColor = self.selectedTextColor;
+    }
+    else {
+        self.titleLabel.textColor = self.highlightedTextColor;
+        self.monthLabel.textColor = self.monthTextColor;
+        self.dayOfWeekLabel.textColor = self.dayOfWeekTextColor;
+    }
+}
+
 - (void) setHighlightedTextColor:(UIColor *)textColor {
+    _highlightedTextColor = textColor;
+    
     self.titleLabel.highlightedTextColor = textColor;
     self.monthLabel.highlightedTextColor = textColor;
     self.dayOfWeekLabel.highlightedTextColor = textColor;

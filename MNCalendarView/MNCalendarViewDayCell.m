@@ -67,18 +67,25 @@ NSString *const MNCalendarViewDayCellIdentifier = @"MNCalendarViewDayCellIdentif
     self.enabled ? self.enabledBackgroundColor : self.disabledBackgroundColor;
 }
 
+- (void) setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    
+    if (selected) {
+        self.titleLabel.textColor = self.selectedTextColor;
+    }
+    else {
+        self.titleLabel.textColor = ((self.enabled) ? self.enabledTextColor : self.disabledTextColor);
+    }
+}
+
 - (void) setToday:(BOOL)isToday {
     _today = isToday;
     
     if (isToday) {
         [self.titleLabel setFont:[UIFont boldSystemFontOfSize:14.f]];
-        [self.titleLabel setTextColor:self.todayTextColor];
-        [self.dayOfWeekLabel setTextColor:self.todayTextColor];
     }
     else {
         [self.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
-        [self.titleLabel setTextColor:((self.enabled) ? self.enabledTextColor : self.disabledTextColor)];
-        [self.dayOfWeekLabel setTextColor:self.dayOfWeekTextColor];
     }
 }
 
