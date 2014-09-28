@@ -93,14 +93,17 @@ NSString *const MNCalendarViewCellIdentifier = @"MNCalendarViewCellIdentifier";
 }
 
 - (void) setSelectedColor:(UIColor *)selectedColor {
+    _selectedColor = selectedColor;
     self.selectedBackgroundView.backgroundColor = selectedColor;
 }
 
 - (void) setMonthTextColor:(UIColor *)monthTextColor {
+    _monthTextColor = monthTextColor;
     self.monthLabel.textColor = monthTextColor;
 }
 
 - (void) setDayOfWeekTextColor:(UIColor *)dayOfWeekTextColor {
+    _dayOfWeekTextColor = dayOfWeekTextColor;
     self.dayOfWeekLabel.textColor = dayOfWeekTextColor;
 }
 

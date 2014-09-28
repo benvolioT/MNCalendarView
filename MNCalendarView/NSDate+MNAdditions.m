@@ -110,11 +110,11 @@
 }
 
 - (BOOL) mn_isEarlierThanDate: (NSDate *) aDate {
-	return ([self earlierDate:aDate] == self);
+	return ([self earlierDate:aDate] == self && ![self isEqualToDate:aDate]);
 }
 
 - (BOOL) mn_isLaterThanDate: (NSDate *) aDate {
-	return ([self laterDate:aDate] == self);
+	return ([self laterDate:aDate] == self && ![self isEqualToDate:aDate]);
 }
 
 - (instancetype) mn_dateByAddingDays:(NSInteger)dDays calendar:(NSCalendar *)calendar {

@@ -19,9 +19,9 @@ NSString *const MNCalendarViewDayCellIdentifier = @"MNCalendarViewDayCellIdentif
 
 @implementation MNCalendarViewDayCell
 
-- (void)setDate:(NSDate *)date
-          month:(NSDate *)month
-       calendar:(NSCalendar *)calendar {
+- (void) setDate:(NSDate *)date
+           month:(NSDate *)month
+        calendar:(NSCalendar *)calendar {
     
     self.date     = date;
     self.calendar = calendar;
@@ -41,8 +41,8 @@ NSString *const MNCalendarViewDayCellIdentifier = @"MNCalendarViewDayCellIdentif
     [self setNeedsDisplay];
 }
 
-- (void)setDate:(NSDate *)date
-       calendar:(NSCalendar *)calendar {
+- (void) setDate:(NSDate *)date
+        calendar:(NSCalendar *)calendar {
     
     self.date     = date;
     self.calendar = calendar;
@@ -58,11 +58,10 @@ NSString *const MNCalendarViewDayCellIdentifier = @"MNCalendarViewDayCellIdentif
     [self setNeedsDisplay];
 }
 
-- (void)setEnabled:(BOOL)enabled {
+- (void) setEnabled:(BOOL)enabled {
     [super setEnabled:enabled];
     
-    self.titleLabel.textColor =
-    self.enabled ? self.enabledTextColor : self.disabledTextColor;
+    self.titleLabel.textColor = ((self.enabled) ? self.enabledTextColor : self.disabledTextColor);
     
     self.backgroundColor =
     self.enabled ? self.enabledBackgroundColor : self.disabledBackgroundColor;
@@ -70,26 +69,28 @@ NSString *const MNCalendarViewDayCellIdentifier = @"MNCalendarViewDayCellIdentif
 
 - (void) setToday:(BOOL)isToday {
     _today = isToday;
-
+    
     if (isToday) {
         [self.titleLabel setFont:[UIFont boldSystemFontOfSize:14.f]];
         [self.titleLabel setTextColor:self.todayTextColor];
+        [self.dayOfWeekLabel setTextColor:self.todayTextColor];
     }
     else {
         [self.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
-        [self.titleLabel setTextColor:self.dayOfWeekTextColor];
+        [self.titleLabel setTextColor:((self.enabled) ? self.enabledTextColor : self.disabledTextColor)];
+        [self.dayOfWeekLabel setTextColor:self.dayOfWeekTextColor];
     }
 }
 
-- (void)drawRect:(CGRect)rect {
+- (void) drawRect:(CGRect)rect {
     [super drawRect:rect];
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGColorRef separatorColor = self.separatorColor.CGColor;
     
-    CGSize size = self.bounds.size;    
-
+    CGSize size = self.bounds.size;
+    
     CGFloat pixel = 1.f / [UIScreen mainScreen].scale;
     MNContextDrawLine(context,
                       CGPointMake(size.width - pixel, pixel),

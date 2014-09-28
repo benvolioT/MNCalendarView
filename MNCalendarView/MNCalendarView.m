@@ -54,6 +54,7 @@
     _separatorColor = [UIColor colorWithRed:.85f green:.85f blue:.85f alpha:1.f];
     _headerBackgroundColor = [UIColor colorWithRed:.96f green:.96f blue:.96f alpha:1.f];
     _headerTextColor = [UIColor darkTextColor];
+    _shouldShowMonthLabelForAllCells = FALSE;
     
     [self addSubview:self.calendarHeaderView];
     [self addSubview:self.datesCollectionView];
@@ -131,6 +132,26 @@
     _calendarHeaderView.textColor = headerTextColor;
 }
 
+- (void) setEnabledBackgroundColor:(UIColor *)enabledBackgroundColor {
+    _enabledBackgroundColor = enabledBackgroundColor;
+    [self.datesCollectionView reloadItemsAtIndexPaths:[self.datesCollectionView indexPathsForVisibleItems]];
+}
+
+- (void) setDisabledBackgroundColor:(UIColor *)disabledBackgroundColor {
+    _disabledBackgroundColor = disabledBackgroundColor;
+    [self.datesCollectionView reloadItemsAtIndexPaths:[self.datesCollectionView indexPathsForVisibleItems]];
+}
+
+- (void) setEnabledTextColor:(UIColor *)enabledTextColor {
+    _enabledTextColor = enabledTextColor;
+    [self.datesCollectionView reloadItemsAtIndexPaths:[self.datesCollectionView indexPathsForVisibleItems]];
+}
+
+- (void) setDisabledTextColor:(UIColor *)disabledTextColor {
+    _disabledTextColor = disabledTextColor;
+    [self.datesCollectionView reloadItemsAtIndexPaths:[self.datesCollectionView indexPathsForVisibleItems]];
+}
+
 - (void) setCalendar:(NSCalendar *)calendar {
     _calendar = calendar;
     
@@ -161,11 +182,12 @@
 }
 
 - (void) scrollToSelectedDateAnimated:(BOOL)animated {
-    NSIndexPath *indexPath = [self indexPathOfSelectedDate];
-    if (indexPath) {        
+    if (_selectedDate) {
         switch (self.layoutMode) {
             case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
             {
+                NSIndexPath *indexPath = [self indexPathOfDate:_selectedDate];
+                
                 [self.datesCollectionView layoutIfNeeded];
                 
                 UICollectionViewLayoutAttributes *layoutAttributes =
@@ -183,6 +205,7 @@
             case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
             case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
             {
+                NSIndexPath *indexPath = [self indexPathOfDate:[_selectedDate mn_firstDateOfWeek:self.calendar]];
                 [self.datesCollectionView scrollToItemAtIndexPath:indexPath
                                                  atScrollPosition:UICollectionViewScrollPositionLeft
                                                          animated:animated];
@@ -190,14 +213,6 @@
             }
         }
     }
-}
-
-- (NSIndexPath *) indexPathOfSelectedDate {
-    NSIndexPath *indexPath = [self indexPathOfDate:_selectedDate];
-    
-    NSLog(@"IndexPath of date (%@): (%d)-(%d)", _selectedDate, indexPath.section, indexPath.item);
-    
-    return indexPath;
 }
 
 - (void) setLayoutMode:(MNCalendarViewLayoutMode)layoutMode {
@@ -242,19 +257,30 @@
     NSMutableArray *sectionDates = @[].mutableCopy;
     
     NSCalendarUnit calendarUnit;
+    NSDate *enumerationStartDate;
+    NSDate *enumerationEndDate;
+    
     switch (self.layoutMode) {
         case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        {
+            enumerationStartDate = [self.fromDate mn_firstDateOfMonth:self.calendar];
+            enumerationEndDate = [self.toDate mn_firstDateOfMonth:self.calendar];
             calendarUnit = NSMonthCalendarUnit;
             break;
+        }
         case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
         case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
+        {
+            enumerationStartDate = [self.fromDate mn_firstDateOfWeek:self.calendar];
+            enumerationEndDate = [self.toDate mn_firstDateOfWeek:self.calendar];
             calendarUnit = NSWeekCalendarUnit;
             break;
+        }
     }
     
     MNFastDateEnumeration *enumeration =
-    [[MNFastDateEnumeration alloc] initWithFromDate:[self.fromDate mn_firstDateOfMonth:self.calendar]
-                                             toDate:[self.toDate mn_firstDateOfMonth:self.calendar]
+    [[MNFastDateEnumeration alloc] initWithFromDate:enumerationStartDate
+                                             toDate:enumerationEndDate
                                            calendar:self.calendar
                                                unit:calendarUnit];
     for (NSDate *date in enumeration) {
@@ -458,6 +484,11 @@
     return headerView;
 }
 
+- (BOOL) shouldShowMonthLabelForCellAtDate:(NSDate *)date {
+    return (self.shouldShowMonthLabelForAllCells ||
+            [date mn_isFirstDateOfMonthInCalendar:self.calendar]);
+}
+
 - (UICollectionViewCell *) collectionView:(UICollectionView *)collectionView
                    cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MNCalendarViewDayCell *cell = [_datesCollectionView dequeueReusableCellWithReuseIdentifier:MNCalendarViewDayCellIdentifier
@@ -471,7 +502,7 @@
         [cell setEnabled:[self dateEnabled:date]];
     }
     
-    if (cell.enabled && [date mn_isFirstDateOfMonthInCalendar:self.calendar]) {
+    if (cell.enabled && [self shouldShowMonthLabelForCellAtDate:date]) {
         NSString *monthLabel = [self.shortMonthFormatter stringFromDate:date];
         cell.monthLabel.text = monthLabel;
     }
@@ -509,28 +540,45 @@
 }
 
 - (NSDate *) setDateOnCell:(MNCalendarViewDayCell *)cell forIndexPath:(NSIndexPath *)indexPath {
+    NSDate *date = [self dateForIndexPath:indexPath];
+    
+    switch (self.layoutMode) {
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
+        {
+            NSDate *sectionDate = [self dateOfStartOfSectionForIndexPath:indexPath];
+            [cell setDate:date
+                    month:sectionDate
+                 calendar:self.calendar];
+            break;
+        }
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
+        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
+        {
+            [cell setDate:date
+                 calendar:self.calendar];
+            break;
+        }
+    }
+    
+    return date;
+}
+
+- (NSDate *) dateOfStartOfSectionForIndexPath:(NSIndexPath *)indexPath {
     NSDate *sectionDate = self.sectionDates[indexPath.section];
+    return sectionDate;
+}
+
+- (NSDate *) dateForIndexPath:(NSIndexPath *)indexPath {
+    NSDate *sectionDate = [self dateOfStartOfSectionForIndexPath:indexPath];
     NSDate *firstDateInSection = [self firstVisibleDateOfSection:sectionDate];
+    
+//    NSLog(@"IndexPath (%d)-(%d); sectionDate (%@); firstDateInSection (%@)", indexPath.section, indexPath.item, sectionDate, firstDateInSection);
     
     NSUInteger day = indexPath.item;
     NSDateComponents *components = [self.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit
                                                     fromDate:firstDateInSection];
     components.day += day;
     NSDate *date = [self.calendar dateFromComponents:components];
-    
-    switch (self.layoutMode) {
-        case MN_CALENDAR_VIEW_LAYOUT_MODE_MONTH:
-            [cell setDate:date
-                    month:sectionDate
-                 calendar:self.calendar];
-            break;
-        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
-        case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
-            [cell setDate:date
-                 calendar:self.calendar];
-            break;
-    }
-    
     return date;
 }
 
@@ -540,25 +588,45 @@
     }
     
     date = [date mn_dateAtBeginningOfDateInCalendar:self.calendar];
-    
-    if ([date mn_isEarlierThanDate:self.fromDate] ||
-        [date mn_isLaterThanDate:self.toDate]) {
-        return nil;
-    }
+
+    //TODO: remove?
+//    if ([date mn_isEarlierThanDate:self.fromDate] ||
+//        [date mn_isLaterThanDate:self.toDate]) {
+//        return nil;
+//    }
     
     long section = 1;
     while (section < self.sectionDates.count) {
         NSDate *firstDateInSection = self.sectionDates[section];
+  
+        NSLog(@"Comparing date (%@) to firstDateInSection (%@) for section %ld.", date, firstDateInSection, section);
         
         if ([date isEqualToDate:firstDateInSection]) {
-            return [NSIndexPath indexPathForItem:0 inSection:section];
+            break;
         }
         
         if ([date mn_isEarlierThanDate:firstDateInSection]) {
-            return [NSIndexPath indexPathForItem:0 inSection:(section - 1)];
+            section--;
+            break;
         }
         
         section++;
+    }
+    
+    NSLog(@"Section is (%ld)", section);
+    
+    long item = 0;
+    long numberOfItemsInSection = [self collectionView:self.datesCollectionView numberOfItemsInSection:section];
+    NSDate *currentDate = self.sectionDates[section];
+    while (item < numberOfItemsInSection) {
+        
+        NSLog(@"Comparing date (%@) to currentDate (%@) for item %ld.", date, currentDate, item);
+        
+        if ([date isEqualToDate:currentDate]) {
+            return [NSIndexPath indexPathForItem:item inSection:section];
+        }
+        currentDate = [currentDate mn_dateByAddingDays:1 calendar:self.calendar];
+        item++;
     }
     
     return nil;
@@ -587,7 +655,7 @@
             [self.delegate calendarView:self didSelectDate:dayCell.date];
         }
         
-        [self.datesCollectionView reloadData];
+        [self.datesCollectionView reloadItemsAtIndexPaths:[self.datesCollectionView indexPathsForVisibleItems]];
     }
 }
 
