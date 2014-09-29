@@ -83,6 +83,11 @@ NSString *const MNCalendarViewDayCellIdentifier = @"MNCalendarViewDayCellIdentif
     
     if (isToday) {
         [self.titleLabel setFont:[UIFont boldSystemFontOfSize:14.f]];
+
+        NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName:@(NSUnderlineStyleSingle)};
+        self.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.titleLabel.text
+                                                                         attributes:underlineAttribute];
+        
     }
     else {
         [self.titleLabel setFont:[UIFont systemFontOfSize:14.f]];
