@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "MNCalendarView.h"
 
+#define MINIMUM_VELOCITY_TO_SEEM_LIKE_THEY_MEAN_IT      0.2f
+
 extern CGFloat const MNMonthHeaderViewHeight;
 
 @interface MNCalendarViewLayout : UICollectionViewFlowLayout

@@ -104,6 +104,7 @@
         _datesCollectionView.dataSource = self;
         _datesCollectionView.delegate = self;
         _datesCollectionView.layer.zPosition = 1023;
+        _datesCollectionView.decelerationRate = UIScrollViewDecelerationRateFast;
         
         [self registerDatesCollectionViewClasses];
     }
