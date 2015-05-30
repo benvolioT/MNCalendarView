@@ -211,7 +211,9 @@
             case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK:
             case MN_CALENDAR_VIEW_LAYOUT_MODE_WEEK_MINIMAL:
             {
-                NSIndexPath *indexPath = [self indexPathOfDate:[_selectedDate mn_firstDateOfWeek:self.calendar]];
+                NSDate *firstDateOfWeek = [_selectedDate mn_firstDateOfWeek:self.calendar];
+                NSIndexPath *indexPath = [self indexPathOfDate:firstDateOfWeek];
+                
                 [self.datesCollectionView scrollToItemAtIndexPath:indexPath
                                                  atScrollPosition:UICollectionViewScrollPositionLeft
                                                          animated:animated];
@@ -235,7 +237,7 @@
                                                // This isn't called for some reason?
                                            }];
     
-    [self scrollToSelectedDateAnimated:FALSE];
+    [self scrollToSelectedDateAnimated:TRUE];
 }
 
 - (void) setFromDate:(NSDate *)fromDate {
